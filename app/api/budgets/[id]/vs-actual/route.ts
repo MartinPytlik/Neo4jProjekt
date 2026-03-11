@@ -23,8 +23,8 @@ export async function GET(_req: NextRequest, { params }: Params) {
       WITH u, b, fb, catItems,
            date(year + '-' + month + '-01') AS startDate,
            (CASE WHEN month = '12'
-                 THEN date((toInteger(year) + 1) + '-01-01')
-                 ELSE date(year + '-' + lpad((toInteger(month) + 1), 2, '0') + '-01')
+                 THEN date(toString(toInteger(year) + 1) + '-01-01')
+                 ELSE date(year + '-' + right('0' + toString(toInteger(month) + 1), 2) + '-01')
             END) AS endDate
       MATCH (u)-[:HAS]->(a:Account)<-[:FROM]-(t:Transaction {type: "expense"})
       OPTIONAL MATCH (t)-[:CATEGORIZED_AS]->(ct:Category)

@@ -23,24 +23,26 @@ export async function GET(req: NextRequest) {
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
   const category = searchParams.get('category');
+  const type = searchParams.get('type');
 
   const driver = getNeo4jDriver();
   const session = driver.session();
 
   try {
-    // WHERE před OPTIONAL MATCH – jinak by se WHERE aplikoval pouze na optional část
     const result = await session.run(
       `
       MATCH (u:User {id: $userId})-[:HAS]->(a:Account)<-[:FROM]-(t:Transaction)
       WHERE ($startDate IS NULL OR t.date >= date($startDate))
         AND ($endDate IS NULL OR t.date <= date($endDate))
+        AND ($type IS NULL OR t.type = $type)
       OPTIONAL MATCH (t)-[:CATEGORIZED_AS]->(c:Category)
+      WITH t, a, c
       WHERE $category IS NULL OR c.id = $category
       RETURN t, a, c
       ORDER BY t.date DESC
       LIMIT 300
       `,
-      { userId: USER_ID, startDate, endDate, category }
+      { userId: USER_ID, startDate, endDate, category, type }
     );
 
     const data = result.records.map((r) => {
