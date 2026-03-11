@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Environment variables (contain passwords!)
+.env
+.env.local
+.env.*.local
+
+# Neo4j data & logs (lokální databáze, nechceme na GitHub)
+neo4j-data/
+neo4j-logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
